@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { postMsg } from "@/shared/utils";
 
@@ -10,6 +10,7 @@ type IssPosition = {
 
 export default () => {
   const [issPosition, setIssPosition] = useState<IssPosition | null>(null);
+  const [isFollowing, setIsFollowing] = useState(false);
 
   // Function to fetch the ISS position from the API
   const fetchIssLocation = async () => {
@@ -30,9 +31,35 @@ export default () => {
     }
   };
 
+  // Fly to the current position
   const handleFlyTo = () => {
-    postMsg("flyTo", issPosition);
+    if (issPosition) {
+      postMsg("flyTo", issPosition);
+    } else {
+      console.warn("No position available to fly to.");
+    }
   };
 
-  return { issPosition, fetchIssLocation, handleFlyTo };
+  // Automatically follow the ISS position
+  useEffect(() => {
+    let intervalId: NodeJS.Timeout | null = null;
+
+    if (isFollowing) {
+      intervalId = setInterval(async () => {
+        await fetchIssLocation();
+        handleFlyTo();
+      }, 5000); // Update every 5 seconds
+    }
+
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [isFollowing, issPosition]);
+
+  // Toggle follow/unfollow
+  const toggleFollow = () => {
+    setIsFollowing((prev) => !prev);
+  };
+
+  return { issPosition, fetchIssLocation, handleFlyTo, isFollowing, toggleFollow };
 };
