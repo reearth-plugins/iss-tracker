@@ -1,39 +1,21 @@
-import { ArrowRightCircle } from "lucide-react";
-
 import { Button } from "@/shared/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/shared/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/shared/components/ui/card";
 import { Input } from "@/shared/components/ui/input";
 import { Label } from "@/shared/components/ui/label";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/shared/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shared/components/ui/table";
 
 import useHooks from "./hooks";
 
 function App() {
-  const { mouseLocation, handleFlyToTokyo } = useHooks();
+  const { issPosition, fetchIssLocation } = useHooks();
 
   // This is a simple example of a UI from ShadCN
   // https://ui.shadcn.com/blocks
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Hello world</CardTitle>
-        <CardDescription>
-          Lipsum dolor sit amet, consectetur adipiscing elit
-        </CardDescription>
+        <CardTitle>ISS Tracker</CardTitle>
+        <CardDescription>View, move, and update the current location of the ISS</CardDescription>
       </CardHeader>
       <CardContent>
         <Table>
@@ -47,48 +29,38 @@ function App() {
           </TableHeader>
           <TableBody>
             <TableRow>
-              <TableCell className="font-semibold">Mouse</TableCell>
+              <TableCell className="font-semibold">ISS</TableCell>
               <TableCell>
                 <Label htmlFor="mouse-lng" className="sr-only">
                   Longitude
                 </Label>
-                <Input
-                  id="mouse-lng"
-                  type="number"
-                  disabled
-                  value={mouseLocation.lng}
-                />
+                <Input id="mouse-lng" type="number" disabled value={issPosition?.lon ?? ""} />
               </TableCell>
               <TableCell>
                 <Label htmlFor="mouse-lat" className="sr-only">
                   Latitude
                 </Label>
-                <Input
-                  id="mouse-lat"
-                  type="number"
-                  disabled
-                  value={mouseLocation.lat}
-                />
+                <Input id="mouse-lat" type="number" disabled value={issPosition?.lat ?? ""} />
               </TableCell>
               <TableCell>
                 <Label htmlFor="mouse-height" className="sr-only">
                   Height
                 </Label>
-                <Input
-                  id="mouse-height"
-                  type="number"
-                  disabled
-                  value={mouseLocation.height}
-                />
+                <Input id="mouse-height" type="number" disabled value={issPosition?.height ?? ""} />
               </TableCell>
             </TableRow>
           </TableBody>
         </Table>
       </CardContent>
-      <CardFooter className="justify-center p-4 border-t">
-        <Button size="sm" className="gap-1" onClick={handleFlyToTokyo}>
-          <ArrowRightCircle className="w-5 h-5" />
-          Fly to Tokyo
+      <CardFooter className="justify-center p-4 border-t gap-3">
+        <Button size="sm" className="gap-1" onClick={fetchIssLocation}>
+          Update
+        </Button>
+        <Button size="sm" className="gap-1">
+          Jump
+        </Button>
+        <Button size="sm" className="gap-1">
+          Follow
         </Button>
       </CardFooter>
     </Card>

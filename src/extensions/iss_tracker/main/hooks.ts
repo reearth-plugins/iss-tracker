@@ -1,70 +1,32 @@
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
+import { useState } from "react";
 
-import { MouseEventProps } from "@/shared/reearthTypes";
-import { hexToHSL, postMsg } from "@/shared/utils";
+type IssPosition = {
+  lat: number;
+  lon: number;
+  height: number;
+};
 
 export default () => {
-  const inited = useRef(false);
+  const [issPosition, setIssPosition] = useState<IssPosition | null>(null);
 
-  useLayoutEffect(() => {
-    if (!inited.current) {
-      const { primaryColor } =
-        (
-          window as Window & {
-            _reearth_plugin_extension_init_data_?: {
-              primaryColor?: string;
-            };
-          }
-        )._reearth_plugin_extension_init_data_ ?? {};
-
-      if (primaryColor) {
-        const hslColor = hexToHSL(primaryColor);
-        if (hslColor) {
-          document.documentElement.style.setProperty("--primary", hslColor);
-        }
+  // Function to fetch the ISS position from the API
+  const fetchIssLocation = async () => {
+    try {
+      const response = await fetch("https://api.wheretheiss.at/v1/satellites/25544");
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      inited.current = true;
+      const data = await response.json();
+      setIssPosition({
+        lat: data.latitude,
+        lon: data.longitude,
+        height: data.altitude * 1000, // Convert altitude from km to meters
+      });
+    } catch {
+      // Reset the position to null if an error occurs
+      setIssPosition(null);
     }
-  }, []);
-
-  const handleFlyToTokyo = useCallback(() => {
-    postMsg("flyToTokyo");
-  }, []);
-
-  const [mouseLocation, setMouseLocation] = useState<{
-    lat: number | undefined;
-    lng: number | undefined;
-    height: number | undefined;
-  }>({
-    lng: 0,
-    lat: 0,
-    height: 0,
-  });
-
-  const handleMouseMove = useCallback((e: MouseEventProps) => {
-    setMouseLocation({
-      lng: e.lng,
-      lat: e.lat,
-      height: e.height,
-    });
-  }, []);
-
-  useEffect(() => {
-    return window.addEventListener("message", (e) => {
-      if (e.data.action === "mouseMove") {
-        handleMouseMove(e.data.payload);
-      }
-    });
-  }, [handleMouseMove]);
-
-  return {
-    mouseLocation,
-    handleFlyToTokyo,
   };
+
+  return { issPosition, fetchIssLocation };
 };
