@@ -1,21 +1,36 @@
 import { Button } from "@/shared/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/shared/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/shared/components/ui/card";
 import { Input } from "@/shared/components/ui/input";
 import { Label } from "@/shared/components/ui/label";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shared/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/shared/components/ui/table";
 
 import useHooks from "./hooks";
 
 function App() {
-  const { issPosition, fetchIssLocation, handleFlyTo, isFollowing, toggleFollow } = useHooks();
+  const { issPosition, handleUpdate, handleJump, isFollowing, toggleFollow } =
+    useHooks();
 
-  // This is a simple example of a UI from ShadCN
-  // https://ui.shadcn.com/blocks
   return (
     <Card>
       <CardHeader>
         <CardTitle>ISS Tracker</CardTitle>
-        <CardDescription>View, move, and update the current location of the ISS</CardDescription>
+        <CardDescription>
+          View, move, and update the current location of the ISS
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <Table>
@@ -34,29 +49,33 @@ function App() {
                 <Label htmlFor="mouse-lng" className="sr-only">
                   Longitude
                 </Label>
-                <Input id="mouse-lng" type="number" disabled value={issPosition?.lon ?? ""} />
+                <Input type="number" disabled value={issPosition?.lon ?? ""} />
               </TableCell>
               <TableCell>
                 <Label htmlFor="mouse-lat" className="sr-only">
                   Latitude
                 </Label>
-                <Input id="mouse-lat" type="number" disabled value={issPosition?.lat ?? ""} />
+                <Input type="number" disabled value={issPosition?.lat ?? ""} />
               </TableCell>
               <TableCell>
                 <Label htmlFor="mouse-height" className="sr-only">
                   Height
                 </Label>
-                <Input id="mouse-height" type="number" disabled value={issPosition?.height ?? ""} />
+                <Input
+                  type="number"
+                  disabled
+                  value={issPosition?.height ?? ""}
+                />
               </TableCell>
             </TableRow>
           </TableBody>
         </Table>
       </CardContent>
-      <CardFooter className="justify-center p-4 border-t gap-3">
-        <Button size="sm" className="gap-1" onClick={fetchIssLocation}>
+      <CardFooter className="justify-center gap-3 p-4 border-t">
+        <Button size="sm" className="gap-1" onClick={handleUpdate}>
           Update
         </Button>
-        <Button size="sm" className="gap-1" onClick={handleFlyTo}>
+        <Button size="sm" className="gap-1" onClick={handleJump}>
           Jump
         </Button>
         <Button size="sm" className="gap-1" onClick={toggleFollow}>
