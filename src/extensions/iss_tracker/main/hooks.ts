@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import { postMsg } from "@/shared/utils";
+
 type IssPosition = {
   lat: number;
   lon: number;
@@ -28,5 +30,9 @@ export default () => {
     }
   };
 
-  return { issPosition, fetchIssLocation };
+  const handleFlyTo = () => {
+    postMsg("flyTo", issPosition);
+  };
+
+  return { issPosition, fetchIssLocation, handleFlyTo };
 };

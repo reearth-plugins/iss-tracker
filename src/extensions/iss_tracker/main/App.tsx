@@ -7,7 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import useHooks from "./hooks";
 
 function App() {
-  const { issPosition, fetchIssLocation } = useHooks();
+  const { issPosition, fetchIssLocation, handleFlyTo } = useHooks();
 
   // This is a simple example of a UI from ShadCN
   // https://ui.shadcn.com/blocks
@@ -56,7 +56,7 @@ function App() {
         <Button size="sm" className="gap-1" onClick={fetchIssLocation}>
           Update
         </Button>
-        <Button size="sm" className="gap-1">
+        <Button size="sm" className="gap-1" onClick={handleFlyTo}>
           Jump
         </Button>
         <Button size="sm" className="gap-1">
